@@ -1,0 +1,29 @@
+name: Create Release on Merge to Release Branch
+
+on:
+  push:
+    branches:
+      - release  # This ensures it runs on push to release branch
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Create a release
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Token to authenticate
+        with:
+          tag_name: v${{ github.run_number }}  # Tag for release, you can customize this
+          release_name: "Release v${{ github.run_number }}"  # Name of the release
+          body: "Release triggered by merge to release branch."
+          draft: false  # Set to true if you want a draft release
+          prerelease: false  # Set to true for a prerelease
+
